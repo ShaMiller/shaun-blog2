@@ -76,7 +76,7 @@ const Blog = ({ posts, meta }) => (
               <PostCard
                 key={i}
                 author={meta.author}
-                category={post.tags[0] || ""}
+                category={post.tags ? post.tags[0] : ""}
                 title={post.title}
                 date={post.publishDate}
                 description={post.description.childMarkdownRemark.html}

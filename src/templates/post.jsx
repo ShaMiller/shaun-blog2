@@ -87,7 +87,6 @@ const PostAuthor = styled("div")``
 const PostDate = styled("div")``
 
 const Post = ({ post, meta }) => {
-  console.log(post)
   return (
     <>
       <Helmet
@@ -129,7 +128,7 @@ const Post = ({ post, meta }) => {
         ].concat(meta)}
       />
       <Layout>
-        <PostCategory>{post.tags[0]}</PostCategory>
+        <PostCategory>{post.tags ? post.tags[0] : ""}</PostCategory>
         <PostTitle>
           <h1>{post.title}</h1>
         </PostTitle>
