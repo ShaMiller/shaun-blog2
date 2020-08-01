@@ -1,64 +1,326 @@
-# Contentful Gatsby Starter Blog
+# Prist | A Gatsby & Prismic Starter
 
-Create a [Gatsby](http://gatsbyjs.com/) blog powered by [Contentful](https://www.contentful.com). This is a simplified version of the [Gatsby Contentful Starter](https://github.com/contentful-userland/gatsby-contentful-starter) which is maintained by our Community.
+A light-themed starter powered by [Gatsby v2](https://www.gatsbyjs.org) and [Prismic](https://prismic.io/) to showcase portfolios and blogs.
 
-![The index page of the starter blog](https://rawgit.com/contentful-userland/gatsby-contentful-starter/master/screenshot.jpg "The index page of the starter blog")
+<img width="1280" alt="prist" src="https://user-images.githubusercontent.com/5288685/63654882-51787e00-c746-11e9-9e9e-2ab823129d93.png">
 
-Static sites are scalable, secure and have very little required maintenance. They come with a drawback though. Not everybody feels good editing files, building a project and uploading it somewhere. This is where Contentful comes into play.
 
-With Contentful and Gatsby you can connect your favorite static site generator with an API that provides an easy to use interface for people writing content and automate the publishing using services like [Travis CI](https://travis-ci.org/) or [Netlify](https://www.netlify.com/).
+### 👩‍💻 [Demo website](http://prist.marguerite.io)
 
-## Features
+## ✨ Features
 
-- Simple content model and structure. Easy to adjust to your needs.
-- Use the [synchronization feature](https://www.contentful.com/developers/docs/references/content-delivery-api/#/reference/synchronization) of our [Delivery API](https://www.contentful.com/developers/docs/references/content-delivery-api/).
-- Responsive/adaptive images via [gatsby-image](https://www.gatsbyjs.org/packages/gatsby-image/) and our [Images API](https://www.contentful.com/developers/docs/references/content-delivery-api/#/reference/synchronization/initial-synchronization-of-entries-of-a-specific-content-type).
+- Landing page with customizable Hero, Portfolio preview, and About component.
+- [Emotion](https://emotion.sh/docs/styled) styled components
+- Blog layout and pages
+- Portfolio layout and pages
+- Google Analytics
+- Mobile ready
 
-## Getting started
+## 🚀 Getting Started
 
-See our [official Contentful getting started guide](https://www.contentful.com/developers/docs/tutorials/general/get-started/).
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/margueriteroth/gatsby-prismic-starter-prist)
 
-### Get the source code and install dependencies.
+1. **Create a Gatsby site.**
 
-```
-$ git clone https://github.com/contentful/starter-gatsby-blog.git
-$ npm install
-```
+Use the Gatsby CLI to create a new site, specifying this project. If you don't have the CLI installed already, see [Gastby instructions](https://www.gatsbyjs.org/tutorial/part-zero/#using-the-gatsby-cli).
 
-Or use the [Gatsby CLI](https://www.npmjs.com/package/gatsby-cli).
-
-```
-$ gatsby new contentful-starter-blog https://github.com/contentful/starter-gatsby-blog/
+```sh
+gatsby new YOUR-PROJECT-NAME https://github.com/margueriteroth/gatsby-prismic-starter-prist
 ```
 
-### Set up of the needed content model and create a configuration file
+2. **Start developing.**
 
-This project comes with a Contentful setup command `npm run setup`.
+Navigate into your new site's directory, install node modules, and start it up.
 
-This command will ask you for a space ID, and access tokens for the Contentful Management and Delivery API and then import the needed content model into the space you define and write a config file (`./.contentful.json`).
+```sh
+cd YOUR-PROJECT-NAME
+npm install
+gatsby develop
+```
 
-`npm run setup` automates that for you but if you want to do it yourself rename `.contentful.json.sample` to `.contentful.json` and add your configuration in this file.
+3. **Open the code and start customizing!**
 
-## Crucial Commands
+Your site is now running at `http://localhost:8000`!
 
-### `npm run dev`
+_Note: You'll also see a second link: _`http://localhost:8000/___graphql`_. This is a tool you can use to experiment with querying your data. Learn more about using this tool in the [Gatsby tutorial](https://www.gatsbyjs.org/tutorial/part-five/#introducing-graphiql)._
 
-Run the project locally with live reload in development mode.
 
-### `npm run build`
+## 👩‍🎤 Configuring Prismic
 
-Run a production build into `./public`. The result is ready to be put on any static hosting you prefer.
+1. **Create account and repo**
 
-### `npm run serve`
+Head over to [Prismic](https://prismic.io/signup) and create your new account. Once you have an account, create a new repository.
 
-Spin up a production-ready server with your blog. Don't forget to build your page beforehand.
+2. **Add the repo to your new project**
 
-## Deployment
+In your `gatsby-config.js` file, add your Prismic Repo name to the `repositoryName` field:
 
-See the [official Contentful getting started guide](https://www.contentful.com/developers/docs/tutorials/general/get-started/).
+```
+`gatsby-plugin-sharp`,
+    {
+        resolve: 'gatsby-source-prismic-graphql',
+        options: {
+            repositoryName: 'REPO-NAME', // (REQUIRED, replace with your own)
+        }
+    },
+```
+3. **Define your Custom Types**
 
-## Contribution
+This starter uses 3 Custom Types:
+![image](https://user-images.githubusercontent.com/5288685/62646196-c01ea480-b91b-11e9-8d30-d9fbf8d1df36.png)
 
-Feel free to open pull requests to fix bugs. If you want to add features, please have a look at the [original version](https://github.com/contentful-userland/gatsby-contentful-starter). It is always open to contributions and pull requests.
+Create the three following Custom Types by selecting "Create New" in the top right of your screen, and selecting either Repeatable Type or Single Type.
 
-You can learn more about how Contentful userland is organized by visiting [our about repository](https://github.com/contentful-userland/about).
+**1. Homepage** (Single)
+![image](https://user-images.githubusercontent.com/5288685/65046592-f265ed80-d92e-11e9-8700-4602b9038c0d.png)
+In the right panel, select *JSON editor* and paste the following:
+```
+{
+  "Main" : {
+    "uid" : {
+      "type" : "UID",
+      "config" : {
+        "label" : "homepage"
+      }
+    },
+    "hero_title" : {
+      "type" : "StructuredText",
+      "config" : {
+        "multi" : "heading1, hyperlink",
+        "allowTargetBlank" : true,
+        "label" : "hero title",
+        "placeholder" : "Hello world"
+      }
+    },
+    "hero_button_text" : {
+      "type" : "StructuredText",
+      "config" : {
+        "multi" : "hyperlink",
+        "label" : "hero button text",
+        "placeholder" : "Click me!"
+      }
+    },
+    "hero_button_link" : {
+      "type" : "Link",
+      "config" : {
+        "allowTargetBlank" : true,
+        "label" : "hero button link",
+        "placeholder" : "Click me!"
+      }
+    },
+    "content" : {
+      "type" : "StructuredText",
+      "config" : {
+        "multi" : "paragraph, preformatted, heading1, heading2, heading3, heading4, heading5, heading6, strong, em, hyperlink, image, embed, list-item, o-list-item, o-list-item",
+        "allowTargetBlank" : true,
+        "label" : "content"
+      }
+    },
+    "about_title" : {
+      "type" : "StructuredText",
+      "config" : {
+        "single" : "heading3",
+        "label" : "about title",
+        "placeholder" : "About"
+      }
+    },
+    "about_bio" : {
+      "type" : "StructuredText",
+      "config" : {
+        "multi" : "paragraph, preformatted, heading5, heading6, strong, em, hyperlink, image, embed, list-item, o-list-item, o-list-item",
+        "allowTargetBlank" : true,
+        "label" : "about bio",
+        "placeholder" : "Lorem ipsum..."
+      }
+    },
+    "about_links" : {
+      "type" : "Group",
+      "config" : {
+        "fields" : {
+          "about_link" : {
+            "type" : "StructuredText",
+            "config" : {
+              "single" : "hyperlink",
+              "allowTargetBlank" : true,
+              "label" : "about link",
+              "placeholder" : "ie. Github"
+            }
+          }
+        },
+        "label" : "about links"
+      }
+    }
+  }
+}
+```
+
+**2. Post** (Repeatable)
+```
+{
+  "Main" : {
+    "post_title" : {
+      "type" : "StructuredText",
+      "config" : {
+        "single" : "heading1, heading2, heading3, heading4, heading5, heading6",
+        "label" : "post title"
+      }
+    },
+    "uid" : {
+      "type" : "UID",
+      "config" : {
+        "label" : "post uid"
+      }
+    },
+    "post_category" : {
+      "type" : "StructuredText",
+      "config" : {
+        "single" : "heading5",
+        "label" : "post category"
+      }
+    },
+    "post_preview_description" : {
+      "type" : "StructuredText",
+      "config" : {
+        "multi" : "paragraph, strong, em, hyperlink, list-item",
+        "label" : "post preview description"
+      }
+    },
+    "post_author" : {
+      "type" : "Select",
+      "config" : {
+        "options" : [ "Prist Team", "Marguerite Roth" ],
+        "default_value" : "Prist Team",
+        "label" : "post author"
+      }
+    },
+    "post_hero_image" : {
+      "type" : "Image",
+      "config" : {
+        "constraint" : { },
+        "thumbnails" : [ ],
+        "label" : "post hero image"
+      }
+    },
+    "post_hero_annotation" : {
+      "type" : "StructuredText",
+      "config" : {
+        "single" : "heading6, strong, em, hyperlink",
+        "allowTargetBlank" : true,
+        "label" : "post hero annotation"
+      }
+    },
+    "post_body" : {
+      "type" : "StructuredText",
+      "config" : {
+        "multi" : "paragraph, preformatted, heading1, heading2, heading3, heading4, heading5, heading6, strong, em, hyperlink, image, embed, list-item, o-list-item, o-list-item",
+        "allowTargetBlank" : true,
+        "label" : "post body"
+      }
+    },
+    "post_date" : {
+      "type" : "Date",
+      "config" : {
+        "label" : "post date"
+      }
+    }
+  }
+}
+```
+
+**3. Project** (Repeatable)
+```
+{
+  "Main" : {
+    "project_title" : {
+      "type" : "StructuredText",
+      "config" : {
+        "single" : "heading1",
+        "label" : "project title"
+      }
+    },
+    "uid" : {
+      "type" : "UID",
+      "config" : {
+        "label" : "project uid"
+      }
+    },
+    "project_category" : {
+      "type" : "StructuredText",
+      "config" : {
+        "single" : "heading5",
+        "label" : "project category"
+      }
+    },
+    "project_preview_description" : {
+      "type" : "StructuredText",
+      "config" : {
+        "multi" : "paragraph, strong, em, hyperlink",
+        "allowTargetBlank" : true,
+        "label" : "project preview description"
+      }
+    },
+    "project_preview_thumbnail" : {
+      "type" : "Image",
+      "config" : {
+        "constraint" : { },
+        "thumbnails" : [ ],
+        "label" : "project preview thumbnail"
+      }
+    },
+    "project_hero_image" : {
+      "type" : "Image",
+      "config" : {
+        "constraint" : { },
+        "thumbnails" : [ ],
+        "label" : "project hero image"
+      }
+    },
+    "project_description" : {
+      "type" : "StructuredText",
+      "config" : {
+        "multi" : "paragraph, preformatted, heading1, heading2, heading3, heading4, heading5, heading6, strong, em, hyperlink, image, embed, list-item, o-list-item, o-list-item",
+        "allowTargetBlank" : true,
+        "label" : "project description"
+      }
+    },
+    "project_post_date" : {
+      "type" : "Date",
+      "config" : {
+        "label" : "project post date"
+      }
+    }
+  }
+}
+```
+
+---
+
+# Tips & Common issues:
+
+Thank you to everyone for contributing!
+
+#### Prismic Data sourcing problems:
+
+Gatsby needs Prismic to return data, meaning the field cannot be left empty. 
+
+From [@georgex1999](https://github.com/georgex1999)
+* If you, like me, are new to prismic.io.. you can't just setup the Custom types as stated in the readme you also need to add Content to them and Publish. This may seem obvious but stumped me for a while!
+* As far as I could tell you need to fill in ALL the fields with content to get the site up and running. Otherwise you get a NULL value error.
+* I had an error that stumped me for a while and it was because I hadn't added the link properly to the social media link. I'll attach a screenshot of this in case it catches anyone else out and the error it brings up.
+![image](https://user-images.githubusercontent.com/5288685/86611700-0857a400-bf7d-11ea-9ec1-4f02f874e5af.png)
+https://github.com/margueriteroth/gatsby-prismic-starter-prist/issues/5#issuecomment-578314236
+
+
+From [@kylemhudson](https://github.com/kylemhudson)
+* I'd recommend adding a few more points to the end of "3. Define your Custom Types" telling the user to fill out at least enough content in the Custom Types to populate one of each type, and definitely show adding the URL to the About section. Adding enough content to everything else doesn't do it, you have to add the URL type within About for the project to work.
+https://github.com/margueriteroth/gatsby-prismic-starter-prist/issues/5#issuecomment-653038425
+
+
+---
+
+I've had issues fetching updated data from Prismic. Running `gatsby clean` clears the cache.
+
+Additionally, clearing the cache, node modules, and package-lock.json can also clear your slate. 
+1. `rm -rf node_modules .cache package-lock.json`
+2. `npm install`
+

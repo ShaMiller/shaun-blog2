@@ -1,86 +1,239 @@
-import React from 'react'
-import { graphql } from 'gatsby'
-import get from 'lodash/get'
-import { Helmet } from 'react-helmet'
-import Hero from '../components/hero'
-import Layout from '../components/layout'
-import ArticlePreview from '../components/article-preview'
+import React from "react";
+import PropTypes from "prop-types";
+import Helmet from "react-helmet";
+import { RichText } from "prismic-reactjs";
+import { graphql, Link } from "gatsby";
+import styled from "@emotion/styled";
+import colors from "styles/colors";
+import dimensions from "styles/dimensions";
+import Button from "components/_ui/Button";
+import About from "components/About";
+import Layout from "components/Layout";
+import ProjectCard from "components/ProjectCard";
 
-class RootIndex extends React.Component {
-  render() {
-    const siteTitle = get(this, 'props.data.site.siteMetadata.title')
-    const posts = get(this, 'props.data.allContentfulBlogPost.edges')
-    const [author] = get(this, 'props.data.allContentfulPerson.edges')
+const Hero = styled("div")`
+    padding-top: 2.5em;
+    padding-bottom: 3em;
+    margin-bottom: 6em;
+    max-width: 830px;
+
+    @media(max-width:${dimensions.maxwidthMobile}px) {
+       margin-bottom: 3em;
+    }
+
+    h1 {
+        margin-bottom: 1em;
+
+        a {
+            text-decoration: none;
+            transition: all 100ms ease-in-out;
+
+            &:nth-of-type(1) { color: ${colors.blue500}; }
+            &:nth-of-type(2) { color: ${colors.orange500}; }
+            &:nth-of-type(3) { color: ${colors.purple500}; }
+            &:nth-of-type(4) { color: ${colors.green500}; }
+            &:nth-of-type(5) { color: ${colors.teal500}; }
+
+            &:hover {
+                cursor: pointer;
+                transition: all 100ms ease-in-out;
+
+                &:nth-of-type(1) { color: ${colors.blue600};    background-color: ${colors.blue200};}
+                &:nth-of-type(2) { color: ${colors.orange600};  background-color: ${colors.orange200};}
+                &:nth-of-type(3) { color: ${colors.purple600};  background-color: ${colors.purple200};}
+                &:nth-of-type(4) { color: ${colors.green600};   background-color: ${colors.green200};}
+                &:nth-of-type(5) { color: ${colors.teal600};    background-color: ${colors.teal200};}
+
+            }
+        }
+    }
+`
+
+const Section = styled("div")`
+    margin-bottom: 10em;
+    display: flex;
+    flex-direction: column;
+
+    @media(max-width:${dimensions.maxwidthTablet}px) {
+        margin-bottom: 4em;
+    }
+
+    &:last-of-type {
+        margin-bottom: 0;
+    }
+`
+
+const WorkAction = styled(Link)`
+    font-weight: 600;
+    text-decoration: none;
+    color: currentColor;
+    transition: all 150ms ease-in-out;
+    margin-left: auto;
+
+    @media(max-width:${dimensions.maxwidthTablet}px) {
+       margin: 0 auto;
+    }
+
+    span {
+        margin-left: 1em;
+        transform: translateX(-8px);
+        display: inline-block;
+        transition: transform 400ms ease-in-out;
+    }
+
+    &:hover {
+        color: ${colors.blue500};
+        transition: all 150ms ease-in-out;
+
+        span {
+            transform: translateX(0px);
+            opacity: 1;
+            transition: transform 150ms ease-in-out;
+        }
+    }
+`
+
+const RenderBody = ({ home, projects, meta }) => (
+    <>
+        <Helmet
+            title={meta.title}
+            titleTemplate={`%s | ${meta.title}`}
+            meta={[
+                {
+                    name: `description`,
+                    content: meta.description,
+                },
+                {
+                    property: `og:title`,
+                    content: meta.title,
+                },
+                {
+                    property: `og:description`,
+                    content: meta.description,
+                },
+                {
+                    property: `og:type`,
+                    content: `website`,
+                },
+                {
+                    name: `twitter:card`,
+                    content: `summary`,
+                },
+                {
+                    name: `twitter:creator`,
+                    content: meta.author,
+                },
+                {
+                    name: `twitter:title`,
+                    content: meta.title,
+                },
+                {
+                    name: `twitter:description`,
+                    content: meta.description,
+                },
+            ].concat(meta)}
+        />
+        <Hero>
+            <>
+                {RichText.render(home.hero_title)}
+            </>
+            <a href={home.hero_button_link.url}
+               target="_blank" rel="noopener noreferrer">
+                <Button>
+                    {RichText.render(home.hero_button_text)}
+                </Button>
+            </a>
+        </Hero>
+        <Section>
+            {projects.map((project, i) => (
+                <ProjectCard
+                    key={i}
+                    category={project.node.project_category}
+                    title={project.node.project_title}
+                    description={project.node.project_preview_description}
+                    thumbnail={project.node.project_preview_thumbnail}
+                    uid={project.node._meta.uid}
+                />
+            ))}
+            <WorkAction to={"/work"}>
+                See more work <span>&#8594;</span>
+            </WorkAction>
+        </Section>
+        <Section>
+            {RichText.render(home.about_title)}
+            <About
+                bio={home.about_bio}
+                socialLinks={home.about_links}
+            />
+        </Section>
+    </>
+);
+
+export default ({ data }) => {
+    //Required check for no data being returned
+    const doc = data.prismic.allHomepages.edges.slice(0, 1).pop();
+    const projects = data.prismic.allProjects.edges;
+    const meta = data.site.siteMetadata;
+
+    if (!doc || !projects) return null;
 
     return (
-      <Layout location={this.props.location}>
-        <div style={{ background: '#fff' }}>
-          <Helmet title={siteTitle} />
-          <Hero data={author.node} />
-          <div className="wrapper">
-            <h2 className="section-headline">Recent articles</h2>
-            <ul className="article-list">
-              {posts.map(({ node }) => {
-                return (
-                  <li key={node.slug}>
-                    <ArticlePreview article={node} />
-                  </li>
-                )
-              })}
-            </ul>
-          </div>
-        </div>
-      </Layout>
+        <Layout>
+            <RenderBody home={doc.node} projects={projects} meta={meta}/>
+        </Layout>
     )
-  }
 }
 
-export default RootIndex
+RenderBody.propTypes = {
+    home: PropTypes.object.isRequired,
+    projects: PropTypes.array.isRequired,
+    meta: PropTypes.object.isRequired,
+};
 
-export const pageQuery = graphql`
-  query HomeQuery {
-    allContentfulBlogPost(sort: { fields: [publishDate], order: DESC }) {
-      edges {
-        node {
-          title
-          slug
-          publishDate(formatString: "MMMM Do, YYYY")
-          tags
-          heroImage {
-            fluid(maxWidth: 350, maxHeight: 196, resizingBehavior: SCALE) {
-              ...GatsbyContentfulFluid_tracedSVG
+export const query = graphql`
+    {
+        prismic {
+            allHomepages {
+                edges {
+                    node {
+                        hero_title
+                        hero_button_text
+                        hero_button_link {
+                            ... on PRISMIC__ExternalLink {
+                                _linkType
+                                url
+                            }
+                        }
+                        content
+                        about_title
+                        about_bio
+                        about_links {
+                            about_link
+                        }
+                    }
+                }
             }
-          }
-          description {
-            childMarkdownRemark {
-              html
+            allProjects {
+                edges {
+                    node {
+                        project_title
+                        project_preview_description
+                        project_preview_thumbnail
+                        project_category
+                        project_post_date
+                        _meta {
+                            uid
+                        }
+                    }
+                }
             }
-          }
         }
-      }
-    }
-    allContentfulPerson(
-      filter: { contentful_id: { eq: "15jwOBqpxqSAOy2eOO4S0m" } }
-    ) {
-      edges {
-        node {
-          name
-          shortBio {
-            shortBio
-          }
-          title
-          heroImage: image {
-            fluid(
-              maxWidth: 1180
-              maxHeight: 480
-              resizingBehavior: PAD
-              background: "rgb:000000"
-            ) {
-              ...GatsbyContentfulFluid_tracedSVG
+        site {
+            siteMetadata {
+                title
+                description
+                author
             }
-          }
         }
-      }
     }
-  }
 `
