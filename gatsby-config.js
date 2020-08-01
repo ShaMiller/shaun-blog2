@@ -25,9 +25,9 @@ if (!spaceId || !accessToken) {
 
 module.exports = {
   siteMetadata: {
-    title: `TODO`,
-    description: `TODO`,
-    author: `Shaun`,
+    title: `Shaun E. Miller`,
+    description: `Shaun E. Miller's personal site`,
+    author: `Shaun E. Miller`,
   },
   plugins: [
     `gatsby-transformer-remark`,
